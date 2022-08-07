@@ -4,11 +4,11 @@
 	"version": "1.10",
 	"applications": {
 		"gecko": {
-			"id": "@mute-sites-by-default"
+			"id": "@mute-sites-in-blacklist"
 		}
 	},
 	"description": "__MSG_description__",
-	"homepage_url": "https://github.com/abba23/mute-sites-by-default",
+	"homepage_url": "https://github.com/MineBill/mute-sites-in-blacklist",
 	"icons": {
 		"48": "icons/icon-48.png",
 		"96": "icons/icon-96.png"
