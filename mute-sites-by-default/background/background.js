@@ -22,6 +22,26 @@ function init() {
 		browser.tabs.onUpdated.addListener(onTabUpdated);
 		browser.storage.onChanged.addListener(onStorageChanged);
 	});
+
+	browser.menus.create({
+		id: "mute-site",
+		title: "Mute site",
+		contexts: ["tab"]
+	});
+
+	browser.menus.create({
+		id: "unmute-site",
+		title: "Unmute site",
+		contexts: ["tab"]
+	});
+
+	browser.menus.onClicked.addListener((info, tab) => {
+		if (info.menuItemId === "mute-site") {
+			modifyBlacklist(urlToHostname(tab.url), true);
+		} else if (info.menuItemId === "unmute-site") {
+			modifyBlacklist(urlToHostname(tab.url), false);
+		}
+	});
 }
 
 function onTabCreated(tab) {
@@ -46,7 +66,9 @@ function onTabUpdated(tabId, changeInfo, tab) {
 function onStorageChanged(changes, area) {
 	// update muted states when blacklist changes
 	getOptions().then(options => {
-		if ("blacklist" in changes && options.changeBlacklist) {
+		// TODO: This will also affect tabs that have different state.
+		// Maybe do some manual tracking of mute state to preserve individual tab mute status when a site get blacklisted
+		if ("blacklist" in changes) {
 			updateAllTabs();
 		}
 	});

@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "__MSG_name__",
-	"version": "1.10",
+	"version": "1.11",
 	"applications": {
 		"gecko": {
 			"id": "@mute-sites-in-blacklist"
@@ -16,7 +16,8 @@
 	"default_locale": "en",
 	"permissions": [
 		"storage",
-		"tabs"
+		"tabs",
+		"menus"
 	],
 	"options_ui": {
 		"page": "options/options.html",
