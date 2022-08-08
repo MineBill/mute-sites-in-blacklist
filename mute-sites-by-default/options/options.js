@@ -4,49 +4,49 @@ init();
 
 function init() {
 	var optionsHeading = document.getElementById("options-heading");
-	var optionsChangeWhitelistCheckbox = document.getElementById("options-change-whitelist-checkbox");
-	var optionsChangeWhitelistLabel = document.getElementById("options-change-whitelist-label");
-	var whitelistHeading = document.getElementById("whitelist-heading");
-	var whitelistAddInput = document.getElementById("whitelist-add-input");
-	var whitelistAddButton = document.getElementById("whitelist-add-button");
-	var whitelistTableWebsiteHeader = document.getElementById("whitelist-table-website-header");
-	var whitelistTableRemoveHeader = document.getElementById("whitelist-table-remove-header");
+	var optionsChangeBlacklistCheckbox = document.getElementById("options-change-blacklist-checkbox");
+	var optionsChangeBlacklistLabel = document.getElementById("options-change-blacklist-label");
+	var blacklistHeading = document.getElementById("blacklist-heading");
+	var blacklistAddInput = document.getElementById("blacklist-add-input");
+	var blacklistAddButton = document.getElementById("blacklist-add-button");
+	var blacklistTableWebsiteHeader = document.getElementById("blacklist-table-website-header");
+	var blacklistTableRemoveHeader = document.getElementById("blacklist-table-remove-header");
 
 	// set localized strings
 	optionsHeading.appendChild(document.createTextNode(browser.i18n.getMessage("optionsHeading")));
-	optionsChangeWhitelistLabel.appendChild(document.createTextNode(browser.i18n.getMessage("optionsChangeWhitelistLabel")));
-	whitelistHeading.appendChild(document.createTextNode(browser.i18n.getMessage("whitelistHeading")));
-	whitelistAddInput.placeholder = browser.i18n.getMessage("whitelistAddInput", "www.youtube.com");
-	whitelistAddButton.appendChild(document.createTextNode(browser.i18n.getMessage("whitelistAddButton")));
-	whitelistTableWebsiteHeader.appendChild(document.createTextNode(browser.i18n.getMessage("whitelistTableWebsiteHeader")));
-	whitelistTableRemoveHeader.appendChild(document.createTextNode(browser.i18n.getMessage("whitelistTableRemoveHeader")));
+	optionsChangeBlacklistLabel.appendChild(document.createTextNode(browser.i18n.getMessage("optionsChangeBlacklistLabel")));
+	blacklistHeading.appendChild(document.createTextNode(browser.i18n.getMessage("blacklistHeading")));
+	blacklistAddInput.placeholder = browser.i18n.getMessage("blacklistAddInput", "www.youtube.com");
+	blacklistAddButton.appendChild(document.createTextNode(browser.i18n.getMessage("blacklistAddButton")));
+	blacklistTableWebsiteHeader.appendChild(document.createTextNode(browser.i18n.getMessage("blacklistTableWebsiteHeader")));
+	blacklistTableRemoveHeader.appendChild(document.createTextNode(browser.i18n.getMessage("blacklistTableRemoveHeader")));
 
 	// initialize options
 	getOptions().then((options) => {
-		optionsChangeWhitelistCheckbox.checked = options.changeWhitelist;
+		optionsChangeBlacklistCheckbox.checked = options.changeBlacklist;
 	});
-	optionsChangeWhitelistCheckbox.addEventListener("change", () => {onOptionsChanged();});
+	optionsChangeBlacklistCheckbox.addEventListener("change", () => {onOptionsChanged();});
 
-	// initialize whitelist
-	updateWhitelistTable();
-	whitelistAddButton.addEventListener("click", () => {onWhitelistAdd();});
-	whitelistAddInput.addEventListener("keypress", (event) => {
+	// initialize blacklist
+	updateBlacklistTable();
+	blacklistAddButton.addEventListener("click", () => {onBlacklistAdd();});
+	blacklistAddInput.addEventListener("keypress", (event) => {
 		if (event.which == 13) {
-			onWhitelistAdd();
+			onBlacklistAdd();
 		}
 	});
 	browser.storage.onChanged.addListener(onStorageChanged);
 }
 
-function updateWhitelistTable() {
-	// create new table from current whitelist
-	var table = document.getElementById("whitelist-table");
+function updateBlacklistTable() {
+	// create new table from current blacklist
+	var table = document.getElementById("blacklist-table");
 	var rows = document.createElement("tbody");
 
-	// create row for every site on whitelist
-	return getWhitelist().then(whitelist => {
-		whitelist.sort();
-		for (let site of whitelist) {
+	// create row for every site on blacklist
+	return getBlacklist().then(blacklist => {
+		blacklist.sort();
+		for (let site of blacklist) {
 			var row = rows.insertRow(-1);
 
 			var siteText = document.createElement("input");
@@ -60,7 +60,7 @@ function updateWhitelistTable() {
 			removeButton.type = "button";
 			removeButton.className = "btn btn-danger";
 			removeButton.value = "X";
-			removeButton.onclick = () => {onWhitelistRemove(site);};
+			removeButton.onclick = () => {onBlacklistRemove(site);};
 
 			var removeCell = row.insertCell(1);
 			removeCell.style.textAlign = "center";
@@ -74,32 +74,32 @@ function updateWhitelistTable() {
 }
 
 function onOptionsChanged() {
-	var optionsChangeWhitelistCheckbox = document.getElementById("options-change-whitelist-checkbox");
+	var optionsChangeBlacklistCheckbox = document.getElementById("options-change-blacklist-checkbox");
 	var options = {
-		"changeWhitelist": optionsChangeWhitelistCheckbox.checked
+		"changeBlacklist": optionsChangeBlacklistCheckbox.checked
 	};
 	return setOptions(options);
 }
 
-function onWhitelistAdd() {
-	var input = document.getElementById("whitelist-add-input");
+function onBlacklistAdd() {
+	var input = document.getElementById("blacklist-add-input");
 	var site = input.value;
 	input.value = "";
 
-	return modifyWhitelist(site, false).then(() => {
-		return updateWhitelistTable();
+	return modifyBlacklist(site, true).then(() => {
+		return updateBlacklistTable();
 	});
 }
 
-function onWhitelistRemove(site) {
-	return modifyWhitelist(site, true).then(() => {
-		return updateWhitelistTable();
+function onBlacklistRemove(site) {
+	return modifyBlacklist(site, false).then(() => {
+		return updateBlacklistTable();
 	});
 }
 
 function onStorageChanged(changes, area) {
-	// update table when whitelist changes
-	if ("whitelist" in changes) {
-		return updateWhitelistTable();
+	// update table when blacklist changes
+	if ("blacklist" in changes) {
+		return updateBlacklistTable();
 	}
 }

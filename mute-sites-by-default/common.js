@@ -1,40 +1,40 @@
 "use strict";
 
-function modifyWhitelist(site, muted) {
-	return getWhitelist().then(whitelist => {
-		var whitelisted = isWhitelisted(whitelist, site);
+function modifyBlacklist(site, muted) {
+	return getBlacklist().then(blacklist => {
+		var blacklisted = isBlacklisted(blacklist, site);
 
-		// add site to whitelist if user changed it to unmuted
-		if (!muted && !whitelisted) {
-			whitelist.push(site);
+		// add site to blacklist if user changed it to muted
+		if (muted && !blacklisted) {
+			blacklist.push(site);
 		}
 
-		// remove site from whitelist if user changed it to muted
-		if (muted && whitelisted) {
-			whitelist.splice(whitelist.indexOf(site), 1);
+		// remove site from blacklist if user changed it to unmuted
+		if (!muted && blacklisted) {
+			blacklist.splice(blacklist.indexOf(site), 1);
 		}
 
-		return setWhitelist(whitelist);
+		return setBlacklist(blacklist);
 	});
 }
 
 function updateTab(tab) {
-	return getWhitelist().then(whitelist => {
-		var whitelisted = isWhitelisted(whitelist, urlToHostname(tab.url));
-		return modifyTab(tab.id, !whitelisted);
+	return getBlacklist().then(blacklist => {
+		var blacklisted = isBlacklisted(blacklist, urlToHostname(tab.url));
+		return modifyTab(tab.id, blacklisted);
 	});
 }
 
 function updateAllTabs() {
-	return Promise.all([getWhitelist(), getTabs()]).then(result => {
-		var whitelist = result[0];
+	return Promise.all([getBlacklist(), getTabs()]).then(result => {
+		var blacklist = result[0];
 		var tabs = result[1];
 		var updates = [];
 
-		// unmute sites on whitelist and mute sites not on whitelist
+		// unmute sites on blacklist and mute sites not on blacklist
 		for (let tab of tabs) {
-			let whitelisted = isWhitelisted(whitelist, urlToHostname(tab.url));
-			updates.push(modifyTab(tab.id, !whitelisted));
+			let blacklisted = isBlacklisted(blacklist, urlToHostname(tab.url));
+			updates.push(modifyTab(tab.id, blacklisted));
 		}
 
 		return Promise.all(updates);
@@ -51,25 +51,25 @@ function setOptions(options) {
 	return browser.storage.local.set({"options": options});
 }
 
-function getWhitelist() {
-	return browser.storage.local.get("whitelist").then(whitelistObject => {
-		return whitelistObject.whitelist;
+function getBlacklist() {
+	return browser.storage.local.get("blacklist").then(blacklistObject => {
+		return blacklistObject.blacklist;
 	});
 }
 
-function setWhitelist(whitelist) {
-	return browser.storage.local.set({"whitelist": whitelist});
+function setBlacklist(blacklist) {
+	return browser.storage.local.set({"blacklist": blacklist});
 }
 
-function isWhitelisted(whitelist, url) {
-	for (let whitelistedUrl of whitelist) {
+function isBlacklisted(blacklist, url) {
+	for (let blacklistedUrl of blacklist) {
 		// escape ignored regular expression symbols
-		whitelistedUrl = whitelistedUrl.replace(/[\-\[\]\/\{\}\(\)\+\?\.\\\^\$\|]/g, "\\$&");
+		blacklistedUrl = blacklistedUrl.replace(/[\-\[\]\/\{\}\(\)\+\?\.\\\^\$\|]/g, "\\$&");
 
 		// replace wildcard character "*" with regular expression
-		whitelistedUrl = whitelistedUrl.split("*").join(".*")
+		blacklistedUrl = blacklistedUrl.split("*").join(".*")
 
-		if (new RegExp("^" + whitelistedUrl + "$").test(url)) {
+		if (new RegExp("^" + blacklistedUrl + "$").test(url)) {
 			return true;
 		}
 	}

@@ -20,7 +20,7 @@
 	],
 	"options_ui": {
 		"page": "options/options.html",
-		"browser_style": false
+		"browser_style": true
 	},
 	"background": {
 		"scripts": [

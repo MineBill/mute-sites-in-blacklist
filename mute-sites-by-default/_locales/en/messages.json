@@ -11,17 +11,17 @@
     "message": "Options",
     "description": "heading of the 'Options' section"
   },
-  "optionsChangeWhitelistLabel": {
-    "message": "Change whitelist accordingly when muting/unmuting a website",
-    "description": "label of the change whitelist option checkbox"
+  "optionsChangeBlacklistLabel": {
+    "message": "Change blacklist accordingly when muting/unmuting a website",
+    "description": "label of the change blacklist option checkbox"
   },
-  "whitelistHeading": {
-    "message": "Whitelist",
-    "description": "heading of the 'Whitelist' section"
+  "blacklistHeading": {
+    "message": "Blacklist",
+    "description": "heading of the 'Blacklist' section"
   },
-  "whitelistAddInput": {
+  "blacklistAddInput": {
     "message": "Website (e.g. $EXAMPLE$)",
-    "description": "placeholder of the whitelist add input",
+    "description": "placeholder of the blacklist add input",
     "placeholders": {
         "example": {
           "content": "$1",
@@ -29,16 +29,16 @@
         }
     }
   },
-  "whitelistAddButton": {
+  "blacklistAddButton": {
     "message": "Add",
-    "description": "text of the whitelist add button"
+    "description": "text of the blacklist add button"
   },
-  "whitelistTableWebsiteHeader": {
+  "blacklistTableWebsiteHeader": {
     "message": "Website",
-    "description": "header of the whitelist table's 'Website' column"
+    "description": "header of the blacklist table's 'Website' column"
   },
-  "whitelistTableRemoveHeader": {
+  "blacklistTableRemoveHeader": {
     "message": "Remove",
-    "description": "header of the whitelist table's 'Remove' column"
+    "description": "header of the blacklist table's 'Remove' column"
   }
 }

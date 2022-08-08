@@ -7,14 +7,14 @@ function init() {
 	getOptions().then(options => {
 		if (!options) {
 			var options = {
-				"changeWhitelist": true
+				"changeBlacklist": true
 			};
 			return setOptions(options);
 		}
 	});
-	getWhitelist().then(whitelist => {
-		if (!whitelist) {
-			return setWhitelist([]);
+	getBlacklist().then(blacklist => {
+		if (!blacklist) {
+			return setBlacklist([]);
 		}
 	}).then(() => {
 		updateAllTabs();
@@ -35,18 +35,18 @@ function onTabUpdated(tabId, changeInfo, tab) {
 		updateTab(tab);
 	}
 
-	// update whitelist when user changes muted state
+	// update blacklist when user changes muted state
 	getOptions().then(options => {
-		if (changeInfo.mutedInfo && changeInfo.mutedInfo.reason == "user" && options.changeWhitelist) {
-			modifyWhitelist(urlToHostname(tab.url), changeInfo.mutedInfo.muted);
+		if (changeInfo.mutedInfo && changeInfo.mutedInfo.reason == "user" && options.changeBlacklist) {
+			modifyBlacklist(urlToHostname(tab.url), changeInfo.mutedInfo.muted);
 		}
 	});
 }
 
 function onStorageChanged(changes, area) {
-	// update muted states when whitelist changes
+	// update muted states when blacklist changes
 	getOptions().then(options => {
-		if ("whitelist" in changes && options.changeWhitelist) {
+		if ("blacklist" in changes && options.changeBlacklist) {
 			updateAllTabs();
 		}
 	});
